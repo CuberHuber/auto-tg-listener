@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.user.tglistener</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <!-- Путь к UV будет подставлен автоматически -->
+        <string>{{UV_PATH}}</string>
+        <string>run</string>
+        <string>main.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <!-- Текущая директория будет подставлена автоматически -->
+    <string>{{PWD}}</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>{{DATA_DIR}}/app.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>{{DATA_DIR}}/error.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+</dict>
+</plist>
