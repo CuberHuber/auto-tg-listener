@@ -31,7 +31,6 @@ autostart: ## Generate plist from template and load into launchd
 	@if [ ! -f "$(TEMPLATE_FILE)" ]; then echo "❌ Error: Template file '$(TEMPLATE_FILE)' not found."; exit 1; fi
 
 	@echo "Generating LaunchAgent plist..."
-	@mkdir -p $(PLIST_DIR)
 
 	@perl -pe 's|{{PWD}}|$(PWD)|g; s|{{UV_PATH}}|$(PYTHON_BIN)|g; s|{{DATA_DIR}}|$(RUNTIME_DIR)|g' "$(TEMPLATE_FILE)" > "$(PLIST_FILE)"
 
@@ -56,6 +55,7 @@ env:
 	  cp -n $(TEMPLATE_ENV) .env; \
 	  echo "ℹ️  No .env file found. A new file has been created."; \
 	fi
+	@mkdir -p $(PLIST_DIR);
 
 logs: ## Tail the application logs
 	@tail -f app.log error.log
