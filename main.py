@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from telethon import TelegramClient, events
 import subprocess
 import asyncio
@@ -11,6 +13,7 @@ load_dotenv()
 TELEGRAM_API_ID = int(os.getenv("DC_TELEGRAM_API_ID"))
 TELEGRAM_API_HASH = os.getenv("DC_TELEGRAM_API_HASH")
 TELEGRAM_PHONE = os.getenv("DC_TELEGRAM_PHONE")
+DATA_DIR = os.getenv("DC_DATA_DIR")
 
 chat_id = os.getenv("DC_CHAT_ID")
 SHORTCUT_NAME = os.getenv("DC_SHORTCUT_NAME", "Notify Telegram Message")
@@ -18,7 +21,7 @@ SHORTCUT_NAME = os.getenv("DC_SHORTCUT_NAME", "Notify Telegram Message")
 # Pre-compile regex pattern
 CODE_PATTERN = re.compile(r"^.*код для подключения.*(\d{6})$", re.MULTILINE | re.DOTALL)
 
-client = TelegramClient('demo_local_session', int(TELEGRAM_API_ID), TELEGRAM_API_HASH)
+client = TelegramClient(Path(DATA_DIR) / 'tg_listener_session', int(TELEGRAM_API_ID), TELEGRAM_API_HASH)
 
 
 @client.on(events.NewMessage(chats=chat_id))
