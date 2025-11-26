@@ -15,6 +15,8 @@ USER_ID := $(shell id -u)
 
 .PHONY: all help start-locally autostart lint stop env logs clean test
 
+all: help
+
 help: ## Show this help message
 	@echo "Usage: make [command]\n\nCommands:\n  install    - Install uv, dependencies, and create .env\n  run        - Run the script manually\n  autostart  - Install as a background service\n  stop       - Stop service\n  logs       - Tail logs\n  clean      - Cleanup"
 
@@ -46,6 +48,9 @@ lint: ## Run code quality tools
 	@$(PYTHON_BIN) run mypy .
 	@markdownlint README.md
 	@checkmake Makefile
+
+test: ## Run tests
+	@$(PYTHON_BIN) run pytest -q
 
 stop: ## Stop and remove the background service
 	@echo "Stopping service..."
