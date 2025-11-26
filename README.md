@@ -1,5 +1,8 @@
 <div align="center">
 
+[![Lint Python](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/lint-python.yml/badge.svg)](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/lint-python.yml)
+[![Lint Markdown](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/lint-markdown.yml/badge.svg)](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/lint-markdown.yml)
+[![Lint Makefile](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/pre-commit.yml)
 ![Python](https://img.shields.io/badge/python-3.13+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
