@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - main
+      - lint
     paths:
       - '.pre-commit-config.yaml'
       - '.pre-commit-hooks.yaml'
