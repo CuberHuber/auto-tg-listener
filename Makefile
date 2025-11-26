@@ -13,18 +13,10 @@ TEMPLATE_ENV := $(PWD)/template/.env.sample
 PYTHON_BIN := $(shell which uv)
 USER_ID := $(shell id -u)
 
-.PHONY: all help
+.PHONY: all help autostart lint stop env logs clean test
 
 help: ## Show this help message
-	@echo "Usage: make [command]"
-	@echo ""
-	@echo "Commands:"
-	@echo "  install    - Install uv, dependencies, and create .env"
-	@echo "  run        - Run the script manually (for testing)"
-	@echo "  autostart  - Install as a background macOS service (LaunchAgent)"
-	@echo "  stop       - Stop and remove the background service"
-	@echo "  logs       - Tail the application logs"
-	@echo "  clean      - Remove virtual environment and temporary files"
+	@echo "Usage: make [command]\n\nCommands:\n  install    - Install uv, dependencies, and create .env\n  run        - Run the script manually\n  autostart  - Install as a background service\n  stop       - Stop service\n  logs       - Tail logs\n  clean      - Cleanup"
 
 autostart: ## Generate plist from template and load into launchd
 	@if [ -z "$(PYTHON_BIN)" ]; then echo "❌ Error: uv not found. Run 'make install' first."; exit 1; fi
@@ -42,11 +34,11 @@ autostart: ## Generate plist from template and load into launchd
 
 	@echo "✅ Service installed and started! Logs are at $(PWD)/app.log"
 
-lint: ## Run code quality tools (pylint, mypy)
-	@echo "Running Pylint..."
+lint: ## Run code quality tools
 	@$(PYTHON_BIN) run pylint main.py
-	@echo "Running Mypy..."
 	@$(PYTHON_BIN) run mypy .
+	@markdownlint README.md
+	@checkmake Makefile
 
 stop: ## Stop and remove the background service
 	@echo "Stopping service..."
@@ -55,12 +47,7 @@ stop: ## Stop and remove the background service
 	@echo "✅ Service stopped and removed."
 
 env:
-	@if [ -f ".env" ]; then \
-		echo "⚠️  .env file already exists. Skipping copy to protect it."; \
-	else \
-	  cp -n $(TEMPLATE_ENV) .env; \
-	  echo "ℹ️  No .env file found. A new file has been created."; \
-	fi
+	@if [ -f ".env" ]; then echo "⚠️  .env file exists."; else cp -n $(TEMPLATE_ENV) .env; echo "ℹ️  .env created."; fi
 	@mkdir -p $(PLIST_DIR);
 
 logs: ## Tail the application logs

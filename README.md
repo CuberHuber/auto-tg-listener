@@ -18,12 +18,12 @@
 
 <div align="center">
   <h1>Totpify</h1>
-  
+
   <!-- One-liner description -->
   <b>🤖 Automated Telegram message listener with regex filtering and macOS Shortcuts integration</b>
 
   <!-- Quick links -->
-  [Overview](#overview) • [Features](#features) • [Quick Start](#quick-start) • [Setup](#setup) • [Environment](#environment) • [Running](#running) • [macos-launchagent](#macos-launchagent) • [Tests](#tests)
+  [Overview](#overview) • [Features](#features) • [Quick Start](#quick-start) • [Setup](#setup) • [Environment](#environment) • [LaunchAgent](#macos-launchagent) • [Tests](#tests)
 </div>
 
 ---
@@ -47,22 +47,26 @@ forwards the extracted code to a macOS Shortcut via the shortcuts CLI.
 > [uv](https://github.com/astral-sh/uv) is an extremely fast Python package installer and resolver. It's the recommended way to set up the project for development.
 
 #### Step 1: Install uv
+
 ```bash
 brew install uv
 ```
 
 #### Step 2: Clone the Repository
+
 ```bash
 git clone https://github.com/CuberHuber/auto-tg-listener.git
 cd auto-tg-listener
 ```
 
 #### Step 3: Create Virtual Environment and install deps
+
 ```bash
 uv sync
 ```
 
 #### Step 4: Prepare environment file and runtime dir
+
 ```bash
 make env   # copies template/.env.sample -> .env if not present and creates run/ directory
 ```
@@ -70,6 +74,7 @@ make env   # copies template/.env.sample -> .env if not present and creates run/
 ---
 
 ## Features
+
 - Seamless integration with Apple Shortcuts
 - 2FA Code Extraction
 - Powerful regex pattern matching for precise message filtering
@@ -81,16 +86,18 @@ make env   # copies template/.env.sample -> .env if not present and creates run/
 
 ### 1. Get Telegram API Credentials
 
-1. Visit https://my.telegram.org/ (mobile device recommended)
+1. Visit <https://my.telegram.org/> (mobile device recommended)
 2. Sign in and go to **API development tools**
 3. Create a new application
-```
-App title: Demo Message Listener
-Short name: demomsglistener
-URL: [leave empty]
-Platform: Desktop
-Description: [leave empty]
-```
+
+    ```text
+    App title: Demo Message Listener
+    Short name: demomsglistener
+    URL: [leave empty]
+    Platform: Desktop
+    Description: [leave empty]
+    ```
+
 4. Save your `api_id` and `api_hash`
 
 ### 2. Get Telegram Chat ID
@@ -103,6 +110,7 @@ Description: [leave empty]
 
 1. Go to the project repository: `cd auto-tg-listener`
 2. Fill in the `.env` file
+
 ```dotenv
 DC_TELEGRAM_API_ID=[api_id]
 DC_TELEGRAM_API_HASH=[api_hash]
@@ -119,15 +127,18 @@ DC_DATA_DIR=run
 1. Launch the `Shortcuts` app.
 
 #### Step 1: Create new shortcut
+
 1. In `Shortcuts`, click the `+` button in the top toolbar.
 2. A blank shortcut editor opens named "**Untitled Shortcut**".
 
 #### Step 2: Change the name of the shortcut
+
 1. Click on "**Untitled Shortcut**" or "**Shortcut Name**" at the top.
 2. Enter the name: `Notify Telegram Message`.
 3. Press _Enter_.
 
 #### Step 3: Shortcut Receive settings
+
 1. In the right pane, click the ⓘ (Details) icon.
 2. Enable "**Use as Quick Action**" (to run from other apps).
 3. In "**Receives**", choose "**Text**" from the dropdown.
@@ -135,10 +146,11 @@ DC_DATA_DIR=run
 5. Add the actions `Copy to Clipboard` and `Show Notification` (optional).
 
 #### Step 4: Fill in the logic
+
 <img width="611" height="244" alt="Screenshot 2025-10-06 at 11 39 43" src="https://github.com/user-attachments/assets/41932864-aad1-4a1d-88a0-4f4490b81f84" />
 
-
 ### 5. Run locally
+
 ```bash
 uv run python main.py
 ```
@@ -151,6 +163,7 @@ uv run python main.py
 ## Environment
 
 Required variables (read at runtime by create_client_and_filter):
+
 - DC_TELEGRAM_API_ID: integer — Telegram API id
 - DC_TELEGRAM_API_HASH: string — Telegram API hash
 - DC_TELEGRAM_PHONE: string — Phone number used for authentication
@@ -158,6 +171,7 @@ Required variables (read at runtime by create_client_and_filter):
 - DC_CHAT_ID: integer — Telegram chat id to listen to
 
 Optional variables:
+
 - DC_SHORTCUT_NAME: string — Apple Shortcut name to run; default: "Notify Telegram Message"
 
 > [!NOTE]
@@ -173,26 +187,32 @@ Run the listener as a background agent using launchd with the provided
 template and Makefile.
 
 ### 1. Prerequisites
+
 - uv is installed and available in PATH
 - .env is configured (see [Setup](#step-4-prepare-environment-file-and-runtime-dir) and [Environment](#3-configure-environment))
 - The Apple Shortcut is set to Receive: Text
 
 ### 2. Choose a destination for the plist
+
 - Default: the Makefile uses ./run for safe iteration
 - For a real agent: set PLIST_DIR to $(HOME)/Library/LaunchAgents in the Makefile
 
 ### 3. Install and start the agent
+
 ```bash
 make autostart
 ```
 
 ### 4. View logs
+
 ```bash
 make logs
 ```
+
 This tails app.log and error.log written by the agent command.
 
 ### 5. Stop or remove the agent
+
 ```bash
 make stop
 ```
@@ -201,6 +221,8 @@ make stop
 > LaunchAgents inherit a minimal PATH. If the shortcuts CLI or uv is not
 > found, adjust PATH in template/service.plist.template or use absolute
 > paths.
+
+<!-- Separator for blockquotes -->
 
 > [!NOTE]
 > If the agent doesn't see your environment variables, use a small wrapper
@@ -214,6 +236,16 @@ make stop
 - Telethon login prompts or session issues: delete files under DC_DATA_DIR and run again to re-authenticate.
 - shortcuts: command not found — Ensure Shortcuts CLI is available on macOS 12+ (preinstalled) and accessible in PATH for launchd. Adjust PATH in the plist if needed.
 - No code extracted — Verify the incoming message ends with the 6 digits after the phrase and update CODE_PATTERN if upstream format has changed.
+
+---
+
+## Tests
+
+Run the test suite to verify logic.
+
+```bash
+uv run pytest
+```
 
 ---
 
@@ -231,9 +263,6 @@ We welcome small, focused contributions.
 - Lint/type-check locally before pushing: ruff and mypy should pass.
 - See .junie/guidelines.md for full details and quality gates.
 
-
 ## License
 
 MIT — see LICENSE.
-
-
