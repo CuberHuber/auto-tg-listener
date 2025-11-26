@@ -42,6 +42,12 @@ autostart: ## Generate plist from template and load into launchd
 
 	@echo "✅ Service installed and started! Logs are at $(PWD)/app.log"
 
+lint: ## Run code quality tools (pylint, mypy)
+	@echo "Running Pylint..."
+	@$(PYTHON_BIN) run pylint main.py
+	@echo "Running Mypy..."
+	@$(PYTHON_BIN) run mypy .
+
 stop: ## Stop and remove the background service
 	@echo "Stopping service..."
 	-launchctl bootout gui/$(USER_ID)/$(PROJECT_NAME) 2>/dev/null

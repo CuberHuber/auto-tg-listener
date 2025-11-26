@@ -9,3 +9,17 @@ dependencies = [
     "python-dotenv>=1.1.1",
     "telethon>=1.41.2",
 ]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.18.2",
+    "pylint>=4.0.3",
+]
+
+[tool.mypy]
+strict = true
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
