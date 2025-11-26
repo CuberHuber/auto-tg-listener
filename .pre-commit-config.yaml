@@ -4,6 +4,6 @@ repos:
     rev: 0.2.2
     hooks:
     # Use this hook to let pre-commit build checkmake in its sandbox
-    -   id: checkmake
+#    -   id: checkmake
     # OR Use this hook to use a pre-installed checkmake executable
-    # -   id: checkmake-system
+     -   id: checkmake-system
