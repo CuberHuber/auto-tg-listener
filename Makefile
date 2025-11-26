@@ -13,12 +13,19 @@ TEMPLATE_ENV := $(PWD)/template/.env.sample
 PYTHON_BIN := $(shell which uv)
 USER_ID := $(shell id -u)
 
-.PHONY: all help autostart lint stop env logs clean test
+.PHONY: all help start-locally autostart lint stop env logs clean test
 
 help: ## Show this help message
 	@echo "Usage: make [command]\n\nCommands:\n  install    - Install uv, dependencies, and create .env\n  run        - Run the script manually\n  autostart  - Install as a background service\n  stop       - Stop service\n  logs       - Tail logs\n  clean      - Cleanup"
 
-autostart: ## Generate plist from template and load into launchd
+start-locally: env
+	@if [ -z "$(PYTHON_BIN)" ]; then echo "❌ Error: uv not found. Run 'make install' first."; exit 1; fi
+	@if [ ! -f "$(TEMPLATE_FILE)" ]; then echo "❌ Error: Template file '$(TEMPLATE_FILE)' not found."; exit 1; fi
+
+	@echo "Launch locally..."
+	@uv run python main.py
+
+autostart: env ## Generate plist from template and load into launchd
 	@if [ -z "$(PYTHON_BIN)" ]; then echo "❌ Error: uv not found. Run 'make install' first."; exit 1; fi
 	@if [ ! -f "$(TEMPLATE_FILE)" ]; then echo "❌ Error: Template file '$(TEMPLATE_FILE)' not found."; exit 1; fi
 
@@ -51,7 +58,7 @@ env:
 	@mkdir -p $(PLIST_DIR);
 
 logs: ## Tail the application logs
-	@tail -f app.log error.log
+	@tail -f $(RUNTIME_DIR)/app.log $(RUNTIME_DIR)/error.log
 
 clean:
 	@echo "Cleaning all env and temporary files..."
