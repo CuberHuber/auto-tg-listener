@@ -41,6 +41,6 @@ jobs:
         pip install "pre-commit>=4.5.0"
     - name: Run pre-commit
       run: |
-        pre-commit run --all-files || true
+        pre-commit run --all-files
       # We don't want a non-zero exit here to block CI in this linter-only workflow
       # (change behavior if you want failures to fail the job).
