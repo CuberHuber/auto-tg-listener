@@ -114,7 +114,7 @@ make env   # copies template/.env.sample -> .env if not present and creates run/
 ```dotenv
 DC_TELEGRAM_API_ID=[api_id]
 DC_TELEGRAM_API_HASH=[api_hash]
-DC_TELEGRAM_PHONE=[your phone]
+DC_TELEGRAM_PHONE=[your_phone]
 
 DC_CHAT_ID=[chat_id]
 DC_SHORTCUT_NAME="Notify Telegram Message"
@@ -152,7 +152,7 @@ DC_DATA_DIR=run
 ### 5. Run locally
 
 ```bash
-uv run python main.py
+make start-locally
 ```
 
 > [!WARNING]
@@ -244,7 +244,7 @@ make stop
 Run the test suite to verify logic.
 
 ```bash
-uv run pytest
+make test
 ```
 
 ---

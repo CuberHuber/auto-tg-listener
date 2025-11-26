@@ -12,12 +12,15 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "mypy>=1.18.2",
     "pre-commit>=4.5.0",
     "pytest>=9.0.1",
     "pytest-cov>=7.0.0",
+    "mypy>=1.18.2",
     "ruff>=0.9.0",
     "wemake-python-styleguide>=1.4.0",
+    "bandit==1.7.10",
+    "semgrep==1.92.0",
+    "codespell==2.3.0",
 ]
 
 [tool.mypy]
@@ -29,6 +32,11 @@ disallow_untyped_defs = true
 ignore_missing_imports = true
 
 [tool.ruff]
+exclude = [
+    ".junie",
+    ".venv",
+    "run",
+]
 line-length = 88
 target-version = "py313"
 
