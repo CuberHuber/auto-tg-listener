@@ -1,9 +1,13 @@
+"""Automated Telegram message listener.
+
+With regex filtering and macOS Shortcuts integration.
 """
-Automated Telegram message listener with regex filtering and macOS Shortcuts integration.
-"""
+
 import asyncio
+import logging
 import os
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -11,49 +15,28 @@ from pathlib import Path
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
 
-# Load environment variables
-load_dotenv()
+# Pre-compile regex pattern
+CODE_PATTERN = re.compile(r"^.*код для подключения.*(\d{6})$", re.DOTALL)
+
+logger = logging.getLogger(__name__)
+
+
+def setup_logging() -> None:
+    """Configure logging to stdout."""
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        stream=sys.stdout,
+    )
 
 
 def get_env(key: str, default: str | None = None) -> str:
     """Get environment variable or raise error."""
-    value = os.getenv(key, default)
-    if value is None:
-        raise RuntimeError(f"Missing required environment variable: {key}")
-    return value
-
-
-# Configuration
-TELEGRAM_API_ID = int(get_env("DC_TELEGRAM_API_ID"))
-TELEGRAM_API_HASH = get_env("DC_TELEGRAM_API_HASH")
-TELEGRAM_PHONE = get_env("DC_TELEGRAM_PHONE")
-DATA_DIR = get_env("DC_DATA_DIR", "run")
-CHAT_ID = int(get_env("DC_CHAT_ID"))
-SHORTCUT_NAME = get_env("DC_SHORTCUT_NAME", "Notify Telegram Message")
-
-# Pre-compile regex pattern
-CODE_PATTERN = re.compile(r"^.*код для подключения.*(\d{6})$", re.DOTALL)
-
-client = TelegramClient(
-    str(Path(DATA_DIR) / 'tg_listener_session'),
-    TELEGRAM_API_ID,
-    TELEGRAM_API_HASH
-)
-
-
-@client.on(events.NewMessage(chats=CHAT_ID))  # type: ignore[misc]
-async def handler(event: events.NewMessage.Event) -> None:
-    """Handle new messages."""
-    try:
-        if event.message and event.message.raw_text:
-            try:
-                code = otp(event.message.raw_text)
-                shortcut(code)
-            except ValueError:
-                # Message does not match pattern, ignore
-                pass
-    except Exception as exc:  # pylint: disable=broad-exception-caught
-        print(f"Error handling message: {exc}")
+    env_value = os.getenv(key, default)
+    if env_value is None:
+        err_msg = f"Missing required environment variable: {key}"
+        raise RuntimeError(err_msg)
+    return env_value
 
 
 def otp(message: str) -> str:
@@ -61,36 +44,91 @@ def otp(message: str) -> str:
     match = CODE_PATTERN.search(message)
     if match:
         return match.group(1)
-    raise ValueError('Message does not match pattern')
+    err_msg = "Message does not match pattern"
+    raise ValueError(err_msg)
 
 
-def shortcut(code: str) -> None:
+def shortcut(code: str, shortcut_name: str | None = None) -> None:
     """Trigger macOS shortcut with the code."""
+    if shortcut_name is None:
+        shortcut_name = get_env("DC_SHORTCUT_NAME", "Notify Telegram Message")
+
+    shortcuts_path = shutil.which("shortcuts")
+    if not shortcuts_path:
+        logger.error("Shortcuts executable not found")
+        return
+
     try:
-        subprocess.run(
-            ['shortcuts', 'run', SHORTCUT_NAME],
-            input=code.encode('utf-8'),
+        subprocess.run(  # noqa: S603
+            [shortcuts_path, "run", shortcut_name],
+            input=code.encode("utf-8"),
             capture_output=True,
             timeout=5,
-            check=True
+            check=True,
         )
-    except subprocess.CalledProcessError as exc:
-        print(f"Shortcut execution failed: {exc}")
-    except subprocess.TimeoutExpired as exc:
-        print(f"Shortcut timed out: {exc}")
+    except subprocess.CalledProcessError:
+        logger.exception("Shortcut execution failed")
+    except subprocess.TimeoutExpired:
+        logger.exception("Shortcut timed out:")
+
+
+def process_message_text(text: str) -> None:
+    """Extract OTP and trigger shortcut."""
+    try:
+        code = otp(text)
+    except ValueError:
+        return
+    shortcut(code)
+
+
+async def new_message_handler(event: events.NewMessage.Event) -> None:
+    """Handle new messages."""
+    try:
+        if event.message and event.message.raw_text:
+            process_message_text(event.message.raw_text)
+    except Exception:
+        logger.exception("Error handling message")
+
+
+def create_client_and_filter() -> tuple[TelegramClient, int, str, str]:
+    """Create client and register handlers."""
+    load_dotenv()
+    api_id = int(get_env("DC_TELEGRAM_API_ID"))
+    api_hash = get_env("DC_TELEGRAM_API_HASH")
+    phone = get_env("DC_TELEGRAM_PHONE")
+    chat_id = int(get_env("DC_CHAT_ID"))
+    data_dir = get_env("DC_DATA_DIR", "run")
+    shortcut_name = get_env("DC_SHORTCUT_NAME", "Notify Telegram Message")
+
+    client = TelegramClient(
+        str(Path(data_dir) / "tg_listener_session"),
+        api_id,
+        api_hash,
+    )
+
+    client.add_event_handler(
+        new_message_handler,
+        events.NewMessage(chats=chat_id),
+    )
+
+    return client, chat_id, shortcut_name, phone
 
 
 async def main() -> None:
     """Main application entry point."""
-    await client.start(phone=TELEGRAM_PHONE)
+    setup_logging()
+    client, chat_id, _, phone = create_client_and_filter()
+    await client.start(phone=phone)
 
-    print(f"Listening to: {CHAT_ID}")
-    print("Фильтр: сообщения с кодом подключения")
+    logger.info(
+        "listening to: %s. Фильтр: сообщения с кодом подключения",  # noqa: RUF001
+        chat_id,
+    )
 
     await client.run_until_disconnected()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:

@@ -44,7 +44,9 @@ autostart: env ## Generate plist from template and load into launchd
 	@echo "✅ Service installed and started! Logs are at $(PWD)/app.log"
 
 lint: ## Run code quality tools
-	@$(PYTHON_BIN) run pylint main.py
+	@$(PYTHON_BIN) run ruff check .
+	@$(PYTHON_BIN) run ruff format --check .
+	@$(PYTHON_BIN) run flake8 main.py
 	@$(PYTHON_BIN) run mypy .
 	@markdownlint README.md
 	@checkmake Makefile

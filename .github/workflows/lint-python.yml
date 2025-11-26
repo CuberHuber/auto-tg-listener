@@ -1,4 +1,4 @@
-name: Lint Python
+name: Lint Python Code
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
       - lint
 
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +22,11 @@ jobs:
           python-version-file: "pyproject.toml"
       - name: Install dependencies
         run: uv sync
-      - name: Run Pylint
-        run: uv run pylint main.py
+      - name: Run Ruff Check
+        run: uv run ruff check .
+      - name: Run Ruff Format
+        run: uv run ruff format --check .
+      - name: Run Flake8
+        run: uv run flake8 main.py
       - name: Run Mypy
         run: uv run mypy .
