@@ -1,53 +1,48 @@
+
 repos:
   - repo: https://github.com/checkmake/checkmake.git
-    # Or another commit hash or version
     rev: 0.2.2
     hooks:
-    # Use this hook to let pre-commit build checkmake in its sandbox
-#    -   id: checkmake
-    # OR Use this hook to use a pre-installed checkmake executable
-     -   id: checkmake-system
+      - id: checkmake
+        language: system
+        files: ^(Makefile|makefile|GNUmakefile|.*\.mk|.*\.make)$
+
   - repo: https://github.com/wemake-services/dotenv-linter
-    rev: 0.7.0  # Use the ref you want to point at
+    rev: 0.7.0
     hooks:
       - id: dotenv-linter
-        args: ['.env', 'template/.env.template']
+        files: |
+          (?x)^(
+            \.env(\..+)?|
+            template/\.env\.template
+          )$
+
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.0
+    rev: v0.14.6
     hooks:
-      - id: ruff
-        args: [ --fix ]
+      - id: ruff-check
       - id: ruff-format
+
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
       - id: detect-secrets
-        args: [ '--baseline', '.secrets.baseline' ]
+        args: ['--baseline', '.secrets.baseline']
         exclude: package.lock.json
+
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.13.0
+    rev: v1.18.2
     hooks:
       - id: mypy
+
   - repo: https://github.com/pycqa/flake8
-    rev: 7.1.1
+    rev: 7.3.0
     hooks:
       - id: flake8
         additional_dependencies: [wemake-python-styleguide]
-  - repo: local
+
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.19.1
     hooks:
-      - id: markdownlint
-        name: markdownlint
-        entry: markdownlint
-        language: system
-        files: \.md$
-        exclude: ^\.junie/
-      - id: mypy
-        name: mypy
-        entry: mypy
-        language: system
-        files: \.py$
-      - id: flake8
-        name: flake8
-        entry: flake8
-        language: system
-        files: \.py$
+    - id: markdownlint-cli2
+      exclude: ^\.junie/
