@@ -9,7 +9,7 @@ PLIST_FILE := $(PLIST_DIR)/$(PROJECT_NAME).plist
 LOG_FILE := $(RUNTIME_DIR)/app.log
 ERROR_LOG_FILE := $(RUNTIME_DIR)/error.log
 TEMPLATE_FILE := $(PWD)/template/service.plist.template
-TEMPLATE_ENV := $(PWD)/template/.env.sample
+TEMPLATE_ENV := $(PWD)/template/.env.template
 PYTHON_BIN := $(shell which uv)
 USER_ID := $(shell id -u)
 

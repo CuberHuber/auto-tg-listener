@@ -21,6 +21,8 @@ dev = [
     "bandit==1.7.10",
     "semgrep==1.92.0",
     "codespell==2.3.0",
+    "dotenv-linter>=0.7.0",
+    "flake8>=7.3.0",
 ]
 
 [tool.mypy]

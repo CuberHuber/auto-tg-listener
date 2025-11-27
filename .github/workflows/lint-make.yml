@@ -1,0 +1,31 @@
+name: Lint Makefile
+
+on:
+  push:
+    paths:
+      - 'Makefile'
+      - 'makefile'
+      - 'GNUmakefile'
+      - '**.mk'
+      - '**.make'
+  pull_request:
+    paths:
+      - 'Makefile'
+      - 'makefile'
+      - 'GNUmakefile'
+      - '**.mk'
+      - '**.make'
+
+jobs:
+  checkmake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v3
+      - name: Set up Go 1.17
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+        id: go
+      - run: go install github.com/checkmake/checkmake/cmd/checkmake@latest
+      - run: checkmake Makefile
