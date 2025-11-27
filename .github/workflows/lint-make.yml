@@ -1,0 +1,26 @@
+name: Lint Makefile
+
+on:
+  push:
+    paths:
+      - 'Makefile'
+      - 'makefile'
+      - 'GNUmakefile'
+      - '**.mk'
+      - '**.make'
+  pull_request:
+    paths:
+      - 'Makefile'
+      - 'makefile'
+      - 'GNUmakefile'
+      - '**.mk'
+      - '**.make'
+
+jobs:
+  checkmake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+      - run: go install github.com/checkmake/checkmake@latest
+      - run: checkmake Makefile
