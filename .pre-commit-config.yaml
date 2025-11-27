@@ -7,6 +7,11 @@ repos:
 #    -   id: checkmake
     # OR Use this hook to use a pre-installed checkmake executable
      -   id: checkmake-system
+  - repo: https://github.com/wemake-services/dotenv-linter
+    rev: 0.7.0  # Use the ref you want to point at
+    hooks:
+      - id: dotenv-linter
+        args: ['.env', 'template/.env.template']
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.9.0
     hooks:
