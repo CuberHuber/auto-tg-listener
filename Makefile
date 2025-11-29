@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (C) 2025 Roman Lupashko (CuberHuber)
+# SPDX-License-Identifier: MIT
+
 # Makefile for Auto Telegram Listener
 
 # Variables

@@ -1,0 +1,8 @@
+--source=.
+--exclude .venv
+--exclude run
+--include ./**/*.py
+--skip-gitignore
+--rule min-words:20
+--rule min-estimate:0
+--rule max-estimate:90

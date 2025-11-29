@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2020 Free Software Foundation Europe e.V.
+# SPDX-License-Identifier: CC0-1.0
+name: REUSE compliance check
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    permissions:
+      contents: read
+      pull-requests: write
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: REUSE Compliance Check
+        uses: fsfe/reuse-action@v6

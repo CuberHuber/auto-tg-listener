@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (C) 2025 Roman Lupashko (CuberHuber)
+# SPDX-License-Identifier: MIT
+name: Lint Markdown
+
+on:
+  push:
+    paths:
+      - "**/*.md"
+  pull_request:
+    paths:
+      - "**/*.md"
+
+jobs:
+  build:
+    permissions:
+      contents: read
+      pull-requests: write
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Markdown Lint
+        uses: davidanson/markdownlint-cli2-action@v21
+        with:
+          globs: "**/*.md"

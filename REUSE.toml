@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (C) 2025 Roman Lupashko (CuberHuber)
+# SPDX-License-Identifier: MIT
+
+version = 1
+[[annotations]]
+path = [
+    ".DS_Store",
+    ".gitattributes",
+    ".gitignore",
+    ".aiignore",
+    ".pylintrc",
+    ".pdd",
+    ".secrets.baseline",
+    "**.json",
+    "**.md",
+    "**.txt",
+    "**/.DS_Store",
+    "**/.gitignore",
+    "**/.pdd",
+    "**/*.csv",
+    "**/*.jpg",
+    "**/*.json",
+    "**/*.md",
+    "**/*.pdf",
+    "**/*.png",
+    "**/*.svg",
+    "**/*.txt",
+    "**/*.lock",
+    "**/*.template",
+    "README.md",
+    "pyproject.toml",
+    "renovate.json",
+
+]
+precedence = "override"
+SPDX-FileCopyrightText = "Copyright (C) 2025 Roman Lupashko (CuberHuber)"
+SPDX-License-Identifier = "MIT"

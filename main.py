@@ -1,3 +1,10 @@
+# SPDX-FileCopyrightText: Copyright (C) 2025 Roman Lupashko (CuberHuber)
+# SPDX-License-Identifier: MIT
+
+##
+# @todo #11:120m/DEV entrance Elegant Object design
+##
+
 """Automated Telegram message listener.
 
 With regex filtering and macOS Shortcuts integration.
@@ -15,19 +22,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
 
-# Pre-compile regex pattern
-CODE_PATTERN = re.compile(r"^.*код для подключения.*(\d{6})$", re.DOTALL)
-
 logger = logging.getLogger(__name__)
-
-
-def setup_logging() -> None:
-    """Configure logging to stdout."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        stream=sys.stdout,
-    )
 
 
 def get_env(key: str, default: str | None = None) -> str:
@@ -39,9 +34,13 @@ def get_env(key: str, default: str | None = None) -> str:
     return env_value
 
 
+##
+# @todo #1:60m/DEV refactor function to use typed pattern parameter
+##
 def otp(message: str) -> str:
     """Extract OTP code from message."""
-    match = CODE_PATTERN.search(message)
+    pattern = re.compile(r"^.*код для подключения.*(\d{6})$", re.DOTALL)
+    match = pattern.search(message)
     if match:
         return match.group(1)
     err_msg = "Message does not match pattern"
@@ -90,15 +89,13 @@ async def new_message_handler(event: events.NewMessage.Event) -> None:
         logger.exception("Error handling message")
 
 
-def create_client_and_filter() -> tuple[TelegramClient, int, str, str]:
+def create_client_and_filter() -> tuple[TelegramClient, int]:
     """Create client and register handlers."""
     load_dotenv()
     api_id = int(get_env("DC_TELEGRAM_API_ID"))
     api_hash = get_env("DC_TELEGRAM_API_HASH")
-    phone = get_env("DC_TELEGRAM_PHONE")
     chat_id = int(get_env("DC_CHAT_ID"))
     data_dir = get_env("DC_DATA_DIR", "run")
-    shortcut_name = get_env("DC_SHORTCUT_NAME", "Notify Telegram Message")
 
     client = TelegramClient(
         str(Path(data_dir) / "tg_listener_session"),
@@ -111,13 +108,20 @@ def create_client_and_filter() -> tuple[TelegramClient, int, str, str]:
         events.NewMessage(chats=chat_id),
     )
 
-    return client, chat_id, shortcut_name, phone
+    return client, chat_id
 
 
 async def main() -> None:
-    """Main application entry point."""
-    setup_logging()
-    client, chat_id, _, phone = create_client_and_filter()
+    """Main entry point."""
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        stream=sys.stdout,
+    )
+
+    client, chat_id = create_client_and_filter()
+
+    phone = get_env("DC_TELEGRAM_PHONE")
     await client.start(phone=phone)
 
     logger.info(
