@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: Copyright (C) 2025 Roman Lupashko (CuberHuber)
+# SPDX-License-Identifier: MIT
 name: Lint Markdown
 
 on:
@@ -12,8 +14,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Markdown Lint
-        uses: davidanson/markdownlint-cli2-action@v1
+        uses: davidanson/markdownlint-cli2-action@v21
         with:
           globs: "**/*.md"
