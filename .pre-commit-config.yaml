@@ -1,5 +1,41 @@
-
+# SPDX-FileCopyrightText: 2020 Free Software Foundation Europe e.V.
+# SPDX-License-Identifier: CC0-1.0
 repos:
+  - repo: https://codeberg.org/fsfe/reuse-tool
+    rev: v6.2.0
+    hooks:
+      - id: reuse
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.35.0
+    hooks:
+      - id: check-dependabot
+      - id: check-github-workflows
+      - id: check-github-actions
+      - id: check-readthedocs
+      - id: check-codecov
+      - id: check-github-issue-config
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.9
+    hooks:
+      - id: actionlint
+        additional_dependencies:
+          - "github.com/wasilibs/go-shellcheck/cmd/shellcheck@latest"
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-xml
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-illegal-windows-names
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      - id: detect-private-key
+      - id: check-case-conflict
   - repo: https://github.com/wemake-services/dotenv-linter
     rev: 0.7.0
     hooks:
@@ -39,3 +75,10 @@ repos:
     hooks:
     - id: markdownlint-cli2
       exclude: ^\.junie/
+
+ci:
+  autofix_commit_msg: "[pre-commit.ci] auto fixes from pre-commit.com hooks"
+  autofix_prs: true
+  autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
+  autoupdate_schedule: weekly
+  submodules: false
