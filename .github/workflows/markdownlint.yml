@@ -11,7 +11,8 @@ on:
       - "**/*.md"
 
 jobs:
-  lint:
+  build:
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
