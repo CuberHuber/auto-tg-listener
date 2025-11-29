@@ -1,6 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (C) 2025 Roman Lupashko (CuberHuber)
 # SPDX-License-Identifier: MIT
 
+##
+# @todo #11:120m/DEV entrance Elegant Object design
+##
+
 """Automated Telegram message listener.
 
 With regex filtering and macOS Shortcuts integration.
@@ -18,9 +22,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
 
-# Pre-compile regex pattern
-CODE_PATTERN = re.compile(r"^.*код для подключения.*(\d{6})$", re.DOTALL)
-
 logger = logging.getLogger(__name__)
 
 
@@ -33,11 +34,13 @@ def get_env(key: str, default: str | None = None) -> str:
     return env_value
 
 
-def otp(message: str) -> str:
+def otp(
+    message: str, pattern=re.compile(r"^.*код для подключения.*(\d{6})$", re.DOTALL)
+) -> str:  # type: ignore[no-untyped-def]
     """Extract OTP code from message."""
-    match = CODE_PATTERN.search(message)
+    match = pattern.search(message)
     if match:
-        return match.group(1)
+        return match.group(1)  # type: ignore[no-any-return]
     err_msg = "Message does not match pattern"
     raise ValueError(err_msg)
 
