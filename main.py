@@ -34,13 +34,15 @@ def get_env(key: str, default: str | None = None) -> str:
     return env_value
 
 
-def otp(
-    message: str, pattern=re.compile(r"^.*код для подключения.*(\d{6})$", re.DOTALL)
-) -> str:  # type: ignore[no-untyped-def]
+##
+# @todo #1:60m/DEV refactor function to use typed pattern parameter
+##
+def otp(message: str) -> str:
     """Extract OTP code from message."""
+    pattern = re.compile(r"^.*код для подключения.*(\d{6})$", re.DOTALL)
     match = pattern.search(message)
     if match:
-        return match.group(1)  # type: ignore[no-any-return]
+        return match.group(1)
     err_msg = "Message does not match pattern"
     raise ValueError(err_msg)
 
