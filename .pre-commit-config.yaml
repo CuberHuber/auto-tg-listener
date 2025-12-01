@@ -16,6 +16,7 @@ repos:
       - id: check-readthedocs
       - id: check-codecov
       - id: check-github-issue-config
+      - id: check-citation-file-format
 
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.9
