@@ -380,3 +380,4 @@ cython_debug/
 # Report files from lychee linter https://github.com/marketplace/actions/lychee-broken-link-checker
 ./lychee
 ./lychee/**
+.lycheecache
