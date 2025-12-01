@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (C) 2025 Roman Lupashko (CuberHuber)
+# SPDX-License-Identifier: MIT
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: ".github/workflows"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Moscow"
+
+    # Group all Python package updates into a single PR
+    groups:
+      python-packages:
+        patterns:
+          - "*"
+
+    # Auto-merge minor and patch updates (optional)
+    open-pull-requests-limit: 10
+
+    # Customize commit messages
+    commit-message:
+      prefix: "deps"
+      include: "scope"
