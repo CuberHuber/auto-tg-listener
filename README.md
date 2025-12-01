@@ -1,8 +1,8 @@
 <div align="center">
 
-[![Lint Python](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/lint-python.yml/badge.svg)](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/lint-python.yml)
-[![Lint Markdown](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/lint-markdown.yml/badge.svg)](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/lint-markdown.yml)
-[![Lint Makefile](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/pre-commit.yml)
+[![Lint Python](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/pythonlint.yml/badge.svg)](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/pythonlint.yml)
+[![Lint Markdown](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/markdownlint.yml/badge.svg)](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/markdownlint.yml)
+[![Lint Makefile](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/pytest.yml/badge.svg)](https://github.com/CuberHuber/auto-tg-listener/actions/workflows/pytest.yml)
 [![PDD status](https://www.0pdd.com/svg?name=CuberHuber/auto-tg-listener)](https://www.0pdd.com/p?name=CuberHuber/auto-tg-listener)
 [![codecov](https://codecov.io/gh/CuberHuber/auto-tg-listener/graph/badge.svg?token=T330BHPEYU)](https://codecov.io/gh/CuberHuber/auto-tg-listener)
 
@@ -16,7 +16,7 @@
 [![Telethon](https://img.shields.io/badge/Telethon-1.x-6A5ACD)](https://github.com/LonamiWebs/Telethon)
 [![uv](https://img.shields.io/badge/uv-managed-000000)](https://github.com/astral-sh/uv)
 [![dotenv](https://img.shields.io/badge/python--dotenv-optional_at_import-success)](https://github.com/theskumar/python-dotenv)
-[![Shortcuts](https://img.shields.io/badge/Apple-Shortcuts-blueviolet)](https://support.apple.com/guide/shortcuts/welcome/mac)
+[![Shortcuts](https://img.shields.io/badge/Apple-Shortcuts-blueviolet)](https://support.apple.com/guide/shortcuts/welcome/ios)
 
 </div>
 
