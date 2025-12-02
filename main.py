@@ -12,106 +12,18 @@ With regex filtering and macOS Shortcuts integration.
 
 import asyncio
 import logging
-import os
-import re
-import shutil
-import subprocess
 import sys
 from pathlib import Path
 
-from dotenv import load_dotenv
-from telethon import TelegramClient, events
+from app.main import App
+from app.patterns import OtpPattern
+from app.project import Environment, Project
+from app.telegram import Telegram, TelegramChannel
 
 logger = logging.getLogger(__name__)
 
 
-def get_env(key: str, default: str | None = None) -> str:
-    """Get environment variable or raise error."""
-    env_value = os.getenv(key, default)
-    if env_value is None:
-        err_msg = f"Missing required environment variable: {key}"
-        raise RuntimeError(err_msg)
-    return env_value
-
-
-##
-# @todo #1:60m/DEV refactor function to use typed pattern parameter
-##
-def otp(message: str) -> str:
-    """Extract OTP code from message."""
-    pattern = re.compile(r"^.*код для подключения.*(\d{6})$", re.DOTALL)
-    match = pattern.search(message)
-    if match:
-        return match.group(1)
-    err_msg = "Message does not match pattern"
-    raise ValueError(err_msg)
-
-
-def shortcut(code: str, shortcut_name: str | None = None) -> None:
-    """Trigger macOS shortcut with the code."""
-    if shortcut_name is None:
-        shortcut_name = get_env("DC_SHORTCUT_NAME", "Notify Telegram Message")
-
-    shortcuts_path = shutil.which("shortcuts")
-    if not shortcuts_path:
-        logger.error("Shortcuts executable not found")
-        return
-
-    try:
-        subprocess.run(  # noqa: S603
-            [shortcuts_path, "run", shortcut_name],
-            input=code.encode("utf-8"),
-            capture_output=True,
-            timeout=5,
-            check=True,
-        )
-    except subprocess.CalledProcessError:
-        logger.exception("Shortcut execution failed")
-    except subprocess.TimeoutExpired:
-        logger.exception("Shortcut timed out:")
-
-
-def process_message_text(text: str) -> None:
-    """Extract OTP and trigger shortcut."""
-    try:
-        code = otp(text)
-    except ValueError:
-        return
-    shortcut(code)
-
-
-async def new_message_handler(event: events.NewMessage.Event) -> None:
-    """Handle new messages."""
-    try:
-        if event.message and event.message.raw_text:
-            process_message_text(event.message.raw_text)
-    except Exception:
-        logger.exception("Error handling message")
-
-
-def create_client_and_filter() -> tuple[TelegramClient, int]:
-    """Create client and register handlers."""
-    load_dotenv()
-    api_id = int(get_env("DC_TELEGRAM_API_ID"))
-    api_hash = get_env("DC_TELEGRAM_API_HASH")
-    chat_id = int(get_env("DC_CHAT_ID"))
-    data_dir = get_env("DC_DATA_DIR", "run")
-
-    client = TelegramClient(
-        str(Path(data_dir) / "tg_listener_session"),
-        api_id,
-        api_hash,
-    )
-
-    client.add_event_handler(
-        new_message_handler,
-        events.NewMessage(chats=chat_id),
-    )
-
-    return client, chat_id
-
-
-async def main() -> None:
+if __name__ == "__main__":
     """Main entry point."""
     logging.basicConfig(
         level=logging.INFO,
@@ -119,21 +31,15 @@ async def main() -> None:
         stream=sys.stdout,
     )
 
-    client, chat_id = create_client_and_filter()
+    root = Path(__file__).parent
 
-    phone = get_env("DC_TELEGRAM_PHONE")
-    await client.start(phone=phone)
-
-    logger.info(
-        "listening to: %s. Фильтр: сообщения с кодом подключения",  # noqa: RUF001
-        chat_id,
+    app = App(
+        Project(Environment(root)),
+        TelegramChannel(Telegram(root).client()),
+        OtpPattern(),
     )
-
-    await client.run_until_disconnected()
-
-
-if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        app.healthcheck()
+        asyncio.run(app.run())
     except KeyboardInterrupt:
         sys.exit(0)
