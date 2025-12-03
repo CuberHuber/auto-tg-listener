@@ -34,9 +34,13 @@ if __name__ == "__main__":
     root = Path(__file__).parent
 
     app = App(
-        Project(Environment(root)),
         TelegramChannel(Telegram(root).client()),
         OtpPattern(),
+        Project(
+            [
+                Environment(root),
+            ]
+        ),
     )
     try:
         app.healthcheck()

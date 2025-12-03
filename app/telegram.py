@@ -112,7 +112,7 @@ class TelegramChannel(AbstractTelegramChannel):
         telegram: TelegramClient,
         phone: str,
         chat: int,
-        channel: AioChannel[events.NewMessage.Event],
+        channel: AioChannel[tgEvents.NewMessage.Event],
     ) -> None:
         """Primary constructor."""
         self._telegram = telegram

@@ -43,7 +43,7 @@ class OtpPattern(AbstractPattern):
         self.__init__(r"^.*код для подключения.*(\d{6})$", re.DOTALL)
 
 
-class Otp:
+class Otp(str):
     """An OTP code in the message."""
 
     _message: str

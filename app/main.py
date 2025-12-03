@@ -5,7 +5,7 @@ SPDX-FileCopyrightText: Copyright (C) 2025 Roman Lupashko (CuberHuber)
 SPDX-License-Identifier: MIT
 """
 
-from app.project import Project
+from app.project import AbstractHealthy
 from app.telegram import AbstractTelegramChannel
 from app.patterns import AbstractPattern, Otp
 
@@ -13,24 +13,24 @@ from app.patterns import AbstractPattern, Otp
 class App:
     """App entry class."""
 
-    _project: Project
+    _components: AbstractHealthy
     _channel: AbstractTelegramChannel
     _pattern: AbstractPattern
 
     def __init__(
         self,
-        project: Project,
         channel: AbstractTelegramChannel,
         pattern: AbstractPattern,
+        components: AbstractHealthy
     ) -> None:
         """Primary constructor."""
-        self._project = project
         self._channel = channel
         self._pattern = pattern
+        self._components = components
 
     def healthcheck(self) -> None:
         """Project health checking."""
-        self._project.health()
+        self._components.check()
 
     async def run(self) -> None:
         """Run the app."""
