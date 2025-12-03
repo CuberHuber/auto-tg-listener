@@ -5,13 +5,13 @@ threshold: 10
 model: true
 errors:
   - lupashcko.rom@icloud.com
-alerts:
-  suppress:
-    - on-found-puzzle
-    - on-lost-puzzle
-    - on-scope
-  github:
-    - CuberHuber
+#alerts:
+#  suppress:
+#    - on-found-puzzle
+#    - on-lost-puzzle
+#    - on-scope
+#  github:
+#    - CuberHuber
 format:
   - short-title
   - title-length=100
